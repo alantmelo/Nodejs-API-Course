@@ -1,17 +1,25 @@
 'use strict'
 
-// import express module
+const bodyParser = require('body-parser');
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
-const router = express.Router();
 
-const route = router.get('/', (req, res, next) =>{
-    res.status(200).send({
-        title:'Node JS API',
-        version: "0.0.1"
-    })
-});
+mongoose.connect('mongodb://xxxx:xxxxx@ds045077.mlab.com:45077/nodejsbalto', { useNewUrlParser: true })
+mongoose.set('useCreateIndex', true);
 
-app.use('/', route);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+
+// Load Models
+const Product = require('./models/product');
+
+// Load Routes
+const indexRoute = require('./../src/routes/index-router');
+const productRoute = require('./../src/routes/product-route');
+
+app.use('/', indexRoute);
+app.use('/products', productRoute);
+
 
 module.exports = app;
