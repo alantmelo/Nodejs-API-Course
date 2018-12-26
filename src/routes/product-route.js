@@ -14,7 +14,9 @@ router.put('/:id', productController.update);
 
 router.delete('/', productController.destroy);
 
-router.get('/tags/:tags', productController.showByTag)
+router.get('/tags/:tags', productController.showByTag);
+
+router.patch('/:id', productController.changeStatus);
 
 
 module.exports = router;
