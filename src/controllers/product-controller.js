@@ -5,22 +5,43 @@ const repository = require('./../repositories/product-repository');
 
 const Product = mongoose.model('Product');
 
-exports.index = (req, res, next) => {
-    repository.index()
-        .then(data => {
-            res.status(200).send(data);
-        }).catch(e => {
-            res.status(400).send(e);
-        });
+exports.index = async (req, res, next) => {
+    try {
+        let data = await repository.index()
+        res.send(data).status(200);
+    } catch (e) {
+        res.status(500).send(e);
+    };
 }
 
-exports.show = (req, res, next) => {
-    repository.show(req.params.id)
-        .then(data => res.status(200).send(data))
-        .catch(e => res.status(400).send(e));
+exports.show = async (req, res, next) => {
+    try {
+        let data = await repository.show(req.params.id);
+        res.status(200).send(data);
+    } catch (e) {
+        res.status(500).send(e);
+    };
 };
 
-exports.create = (req, res, next) => {
+exports.showByTag = async (req, res, next) => {
+    try {
+        let data = await repository.showByTag(req.params.tags);
+        res.status(200).send(data);
+    } catch (e) {
+        res.status(500).send(e);
+    };
+};
+
+exports.showBySlug = async (req, res, next) => {
+    try {
+        let data = await repository.showBySlug(req.params.slug);
+        res.status(200).send(data);
+    } catch (e) {
+        res.status(500).send(e);
+    };
+};
+
+exports.create = async (req, res, next) => {
 
     let contract = new ValidationContract();
     contract.hasMinLen(req.body.title, 3, 'O titulo deve conter pelo menos 3 caracteres');
@@ -30,55 +51,41 @@ exports.create = (req, res, next) => {
     if (!contract.isValid()) {
         res.status(400).send(contract.errors()).end();
         return;
-    }
+    };
 
-    repository.create(req.body).then(data => {
-        return res.status(201).send(data);
-    }).catch(e => {
-        return res.status(400).send(e);
-    });
-}
-
-exports.update = (req, res, next) => {
-    repository.update(req.params.id, req.body)
-        .then(data => {
-            res.status(200).send(data);
-        }).catch(e => {
-            res.status(400).send(e);
-        })
+    try {
+        let data = await repository.create(req.body);
+        res.status(201).send(data);
+    } catch (e) {
+        req.status(500).send(e);
+    };
 };
 
-exports.destroy = (req, res, next) => {
-    repository.destroy(req.body.id).then(function (data) {
+exports.update = async (req, res, next) => {
+    try {
+        let data = await repository.update(req.params.id, req.body);
+        res.status(200).send(data);
+    } catch (e) {
+        res.status(500).send(e);
+    };
+};
+
+exports.destroy = async (req, res, next) => {
+    try {
+        await repository.destroy(req.params.id);
         res.status(202).send({
             msg: "Product deleted successfully"
-        })
-    }).catch(function (e) {
-        res.status(400).send({
-            msg: e
-        })
-    })
-}
-
-exports.showBySlug = async (req, res, next) => {
-    repository.showBySlug(req.params.slug).then(data => {
-        res.status(200).send(data);
-    }).catch(e => {
-        res.status(400).send(e);
-    })
+        });
+    } catch (e) {
+        res.status(500).send(e);
+    };
 };
 
-exports.showByTag = (req, res, next) => {
-    repository.showByTag(req.params.tags)
-        .then(data => res.status(200).send(data))
-        .catch(e => res.status(200).send(e))
+exports.changeStatus = async (req, res, next) => {
+    try{
+        let data = await repository.changeStatus(req.params.id, req.body.active);
+        res.status(200).send({active: data.active});
+    }catch(e){
+        res.status(500).send(e);
+    };
 };
-
-
-exports.changeStatus = (req, res, next) => {
-    repository.changeStatus(req.params.id, req.body.active).then(data =>{
-        res.status(200).send(data);
-    }).catch(e => {
-        res.status(400).send(e);
-    });
-}
