@@ -3,8 +3,9 @@
 const mongoose = require('mongoose');
 const respository = require('./../repositories/customer-repository');
 const ValidationContract = require('./../validations/validations');
-
-const Customer = mongoose.model('Customer')
+const md5 = require('md5');
+const oneSignal = require('./../services/pushnotification');
+const Customer = mongoose.model('Customer');
 
 exports.index = async (req, res, next) => {
     try {
@@ -28,7 +29,14 @@ exports.create = async (req, res, next) => {
     };
 
     try {
-        let data = await respository.create(req.body);
+        let data = await respository.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: md5(req.body.password + global.SALT_KEY)
+        });
+
+        oneSignal.sendNotification(req.body);
+
         res.status(201).send(data);
     } catch (e) {
         res.status(500).send(e);
