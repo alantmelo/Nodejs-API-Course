@@ -7,6 +7,8 @@ const normalizePort = require('normalize-port');
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+// create server
+
 const server = http.createServer(app);
 
 
