@@ -7,7 +7,7 @@ exports.index = async () => {
         'password': 0,
         'roles': 0,
         'email': 0
-    }).populate('itens.product', {});
+    }).populate('itens.product', {}).limit(3);
     return data;
 };
 
