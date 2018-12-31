@@ -5,6 +5,7 @@ const respository = require('./../repositories/customer-repository');
 const ValidationContract = require('./../validations/validations');
 const md5 = require('md5');
 const oneSignal = require('./../services/pushnotification');
+const email = require('./../services/email-service');
 const Customer = mongoose.model('Customer');
 
 exports.index = async (req, res, next) => {
@@ -34,6 +35,8 @@ exports.create = async (req, res, next) => {
             email: req.body.email,
             password: md5(req.body.password + global.SALT_KEY)
         });
+        
+        email.send(req.body,email, global.EMAIL_TMPL.replace('{0}', req.body.name))
 
         oneSignal.sendNotification(req.body);
 

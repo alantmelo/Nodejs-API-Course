@@ -1,11 +1,11 @@
 'use strict'
-
+const config = require('./config')
 const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 
-mongoose.connect('mongodb://admin:admin@ds045077.mlab.com:45077/nodejsbalto', {
+mongoose.connect(config.connectionString, {
     useNewUrlParser: true
 });
 
