@@ -1,12 +1,15 @@
 'use strict';
 var config = require('../config');
-var sendgrid = require('sendgrid')(config.sendgridKey);
+const sgMail = require('@sendgrid/mail');
 
 exports.send = async (to, subject, body) => {
-    sendgrid.send({
-        to: to,
-        from: 'hello@balta.io',
-        subject: subject,
-        html: body
-    });
+    sgMail.setApiKey(config.sendgridKey);
+    const msg = {
+        to: 'alantmelo@live.com',
+        from: 'alantmelo@live.com',
+        subject: 'Sending with SendGrid is Fun',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    };
+    sgMail.send(msg);
 }

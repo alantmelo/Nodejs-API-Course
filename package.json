@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "azure-storage": "^2.1.0",
+    "@sendgrid/mail": "^6.3.1",
+    "azure-storage": "^2.10.2",
     "body-parser": "^1.18.3",
     "debug": "^4.1.0",
     "express": "^4.16.4",
@@ -19,8 +20,7 @@
     "md5": "^2.2.1",
     "mongoose": "^5.4.0",
     "normalize-port": "^1.0.0",
-    "onesignal-node": "^2.0.1",
-    "sendgrid": "^2.0.0"
+    "onesignal-node": "^2.0.1"
   },
   "devDependencies": {}
 }
