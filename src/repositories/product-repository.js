@@ -6,7 +6,7 @@ const Product = require('./../models/product');
 exports.index = async () => {
     let data = await Product.find({
         active: true,
-    }, 'title price slug tags active');
+    }, 'title price slug tags active image');
     return data;
 };
 
