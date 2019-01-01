@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('./../controllers/product-controller');
+const auth = require('./../services/auth-service');
 
 router.get('/', productController.index);
 
@@ -8,9 +9,9 @@ router.get('/admin/:id', productController.show);
 
 router.get('/:slug', productController.showBySlug);
 
-router.post('/', productController.create);
+router.post('/', auth.authorize, productController.create);
 
-router.put('/:id', productController.update);
+router.put('/:id', auth.authorize, productController.update);
 
 router.delete('/', productController.destroy);
 

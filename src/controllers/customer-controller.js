@@ -7,6 +7,7 @@ const md5 = require('md5');
 const oneSignal = require('./../services/pushnotification');
 const email = require('./../services/email-service');
 const Customer = mongoose.model('Customer');
+const auth = require('./../services/auth-service');
 
 exports.index = async (req, res, next) => {
     try {
@@ -35,8 +36,8 @@ exports.create = async (req, res, next) => {
             email: req.body.email,
             password: md5(req.body.password + global.SALT_KEY)
         });
-        
-        email.send(req.body,email, global.EMAIL_TMPL.replace('{0}', req.body.name))
+
+        email.send(req.body, email, global.EMAIL_TMPL.replace('{0}', req.body.name))
 
         oneSignal.sendNotification(req.body);
 
@@ -46,6 +47,36 @@ exports.create = async (req, res, next) => {
     };
 };
 
-exports.authenticate = (req, res, next) => {
-    res.send('');
+exports.authenticate = async (req, res, next) => {
+    // add contract
+    try {
+        let customer = await respository.authenticate({
+            email: req.body.email,
+            password: md5(req.body.password + global.SALT_KEY)
+        });
+
+        if (!customer) {
+            res.status(404).send({
+                'message': 'User or password invalid'
+            });
+            return;
+        }
+
+        const token = await auth.generateToken({
+            email: customer.email,
+            name: customer.name
+        });
+
+        res.status(200).send({
+            token: token,
+            data: {
+                email: customer.email,
+                name: customer.name
+            }
+        });
+
+
+    } catch (e) {
+        res.status(401).send(e);
+    }
 };
