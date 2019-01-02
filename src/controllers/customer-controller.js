@@ -34,7 +34,8 @@ exports.create = async (req, res, next) => {
         let data = await respository.create({
             name: req.body.name,
             email: req.body.email,
-            password: md5(req.body.password + global.SALT_KEY)
+            password: md5(req.body.password + global.SALT_KEY),
+            roles: [req.body.roles]
         });
 
         email.send(req.body.email, 'Welcome', global.EMAIL_TMPL.replace('{0}', req.body.name))
@@ -66,14 +67,16 @@ exports.authenticate = async (req, res, next) => {
         const token = await auth.generateToken({
             id: customer._id,
             email: customer.email,
-            name: customer.name
+            name: customer.name,
+            roles: customer.roles
         });
 
         res.status(200).send({
             token: token,
             data: {
                 email: customer.email,
-                name: customer.name
+                name: customer.name,
+                roles: customer.roles
             }
         });
 
@@ -101,14 +104,16 @@ exports.refreshToken = async (req, res, next) => {
         let newToken = await auth.generateToken({
             id: customer._id,
             name: customer.name,
-            email: customer.email
+            email: customer.email,
+            roles: customer.roles
         });
 
         res.status(200).send({
             token: newToken,
             data: {
                 name: customer.name,
-                email: customer.email
+                email: customer.email,
+                role: customer.roles
             }
         });
         

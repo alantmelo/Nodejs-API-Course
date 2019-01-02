@@ -9,15 +9,15 @@ router.get('/admin/:id', productController.show);
 
 router.get('/:slug', productController.showBySlug);
 
-router.post('/', auth.authorize, productController.create);
+router.post('/', auth.isAdmin, productController.create);
 
-router.put('/:id', auth.authorize, productController.update);
+router.put('/:id', auth.isAdmin, productController.update);
 
-router.delete('/', productController.destroy);
+router.delete('/', auth.isAdmin, productController.destroy);
 
 router.get('/tags/:tags', productController.showByTag);
 
-router.patch('/:id', productController.changeStatus);
+router.patch('/:id', auth.isAdmin, productController.changeStatus);
 
 
 module.exports = router;
