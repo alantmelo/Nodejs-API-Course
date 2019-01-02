@@ -20,6 +20,7 @@
     "jsonwebtoken": "^8.4.0",
     "md5": "^2.2.1",
     "mongoose": "^5.4.0",
+    "mongoose-paginate": "^5.0.3",
     "normalize-port": "^1.0.0",
     "onesignal-node": "^2.0.1"
   },
