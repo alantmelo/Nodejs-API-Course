@@ -1,5 +1,5 @@
 'user strict';
-
+const mongoosePaginate = require('mongoose-paginate');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -41,4 +41,5 @@ const schema = new Schema({
     },
 });
 
+schema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Product', schema);

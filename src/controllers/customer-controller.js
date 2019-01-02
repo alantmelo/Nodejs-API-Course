@@ -82,3 +82,39 @@ exports.authenticate = async (req, res, next) => {
         res.status(401).send(e);
     }
 };
+
+exports.refreshToken = async (req, res, next) => {
+    try {
+
+        const token = req.body.token || req.query.token || req.headers['x-access-token'];
+        const data = await auth.decodeToken(token);
+
+        let customer = await respository.findById(data.id);
+
+        if (!customer) {
+            res.status(404).send({
+                message: 'User not found'
+            });
+            return;
+        };
+
+        let newToken = await auth.generateToken({
+            id: customer._id,
+            name: customer.name,
+            email: customer.email
+        });
+
+        res.status(200).send({
+            token: newToken,
+            data: {
+                name: customer.name,
+                email: customer.email
+            }
+        });
+        
+    } catch(e) {
+        res.status(500).send(e);
+    }
+
+
+}
