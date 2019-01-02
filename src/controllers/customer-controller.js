@@ -37,7 +37,7 @@ exports.create = async (req, res, next) => {
             password: md5(req.body.password + global.SALT_KEY)
         });
 
-        email.send(req.body, email, global.EMAIL_TMPL.replace('{0}', req.body.name))
+        email.send(req.body.email, 'Welcome', global.EMAIL_TMPL.replace('{0}', req.body.name))
 
         oneSignal.sendNotification(req.body);
 
@@ -50,6 +50,7 @@ exports.create = async (req, res, next) => {
 exports.authenticate = async (req, res, next) => {
     // add contract
     try {
+
         let customer = await respository.authenticate({
             email: req.body.email,
             password: md5(req.body.password + global.SALT_KEY)
@@ -63,6 +64,7 @@ exports.authenticate = async (req, res, next) => {
         }
 
         const token = await auth.generateToken({
+            id: customer._id,
             email: customer.email,
             name: customer.name
         });
